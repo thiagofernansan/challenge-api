@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports.list = async (req, res, next) => {
-
     res.json({action: 'list'})
 }
 module.exports.get = async (req, res, next) => {
