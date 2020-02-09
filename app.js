@@ -6,11 +6,14 @@ var logger = require('morgan');
 var app = express();
 
 const {readRecursiveDirectory} = require('./helpers/utils')
+const {init} = require('./helpers/connectMongo')
 
 app.use(logger('[:date[clf]] | ":method :url HTTP/:http-version" | STATUS: :status | CONTENT_LENGTH: :res[content-length] | RESPONSE_TIME: :response-time ms'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+init('models')
 
 
 let ignoreFavicon = (req, res, next) => {
