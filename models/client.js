@@ -6,11 +6,11 @@ const {productSchema} = require('./product')
 const ClientSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Field name is required.']
+        required: [true, 'Name is required.']
     },
     email: {
         type: String,
-        unique: [true, 'Email already exists.']
+        unique: true,
     },
     favoriteProduct: {
         type: [productSchema]
