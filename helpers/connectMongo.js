@@ -10,7 +10,6 @@ let connect = async () => {
         useUnifiedTopology: true
     });
 
-
     // When successfully connected
     mongoose.connection.on('connected', function () {
         console.log('Mongoose default connection open');
@@ -25,6 +24,9 @@ let connect = async () => {
     mongoose.connection.on('disconnected', function () {
         console.log('Mongoose default connection disconnected');
     });
+    mongoose.connection.once('open', () => {
+        console.log('we are connected! ')
+    })
 
 }
 
@@ -36,7 +38,7 @@ module.exports.init = async modelFolder => {
             .filter(item => {
                 return item !== '';
             });
-        fileModels.forEach(file => {
+        fileModels.map(file => {
             let m = file.replace('.js', '');
             require('../' + m);
             console.log('Model ' + m + ' --> ok!');
