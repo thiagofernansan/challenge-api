@@ -1,6 +1,13 @@
-'use strict';
-
 const mongoose = require('mongoose');
-const scm = require('../schemas/product');
+mongoose.set('useCreateIndex', true);
 
-module.exports = mongoose.model('product', scm.schema);
+const ProductSchema = new mongoose.Schema({
+    price: Number,
+    image: String,
+    brand: String,
+    title: String,
+    reviewScore: Number
+}, { collection: 'product' });
+
+module.exports = mongoose.model('product', ProductSchema);
+module.exports.productSchema = ProductSchema;

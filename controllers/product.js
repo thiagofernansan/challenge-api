@@ -1,4 +1,4 @@
-'use strict';
+const Product = require('../models/product')
 
 module.exports.list = async (req, res, next) => {
     res.json({action: 'list'})

@@ -1,6 +1,20 @@
-'use strict';
-
 const mongoose = require('mongoose');
-const scm = require('../schemas/client');
+mongoose.set('useCreateIndex', true);
 
-module.exports = mongoose.model('client', scm.schema);
+const {productSchema} = require('./product')
+
+const ClientSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Field name is required.']
+    },
+    email: {
+        type: String,
+        unique: [true, 'Email already exists.']
+    },
+    favoriteProduct: {
+        type: [productSchema]
+    }
+}, { collection: 'client' });
+
+module.exports = mongoose.model('client', ClientSchema);

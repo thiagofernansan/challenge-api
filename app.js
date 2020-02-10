@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-init('models')
+connectDB();
 
 registryFavicon();
 
@@ -34,6 +34,10 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.json({ message: res.locals.message })
 });
+
+async function connectDB() {
+  await init('models');
+}
 
 function registryFavicon() {
   let ignoreFavicon = (req, res, next) => {
