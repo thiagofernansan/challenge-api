@@ -1,18 +1,9 @@
 const request = require('supertest');
 const app = require('../../app')
-const { init } = require('../../helpers/connectMongo');
-const Client = require('../../models/client');
 const expect = require('chai').expect;
 
-const mongoose = require('mongoose');
+const { clientTest } = require("./mock");
 
-let clientTest = new Client({ name: 'TestName', email: 'testname@testemail.com' })
-
-before(async () => {
-    await init('models')
-    await mongoose.connection.db.dropDatabase();
-    clientTest = await clientTest.save()
-})
 describe('Client Controller Test', () => {
     describe('Create a client', () => {
         it('Returns status 201', done => {
@@ -102,24 +93,24 @@ describe('Client Controller Test', () => {
     describe('Delete Client', () => {
         it('Return 200 when delete client', done => {
             request(app)
-            .delete(`/api/client/${clientTest._id}`)
-            .expect(200)
-            .then(() => done())
-            .catch(done)
+                .delete(`/api/client/${clientTest._id}`)
+                .expect(200)
+                .then(() => done())
+                .catch(done)
         })
         it('Return 404 when get a deleted client', done => {
             request(app)
-            .get(`/api/client/${clientTest._id}`)
-            .expect(404)
-            .then(() => done())
-            .catch(done)
+                .get(`/api/client/${clientTest._id}`)
+                .expect(404)
+                .then(() => done())
+                .catch(done)
         })
         it('Return 404 when delete a deleted client', done => {
             request(app)
-            .delete(`/api/client/${clientTest._id}`)
-            .expect(404)
-            .then(() => done())
-            .catch(done)
+                .delete(`/api/client/${clientTest._id}`)
+                .expect(404)
+                .then(() => done())
+                .catch(done)
         })
     })
 })
