@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true);
 
-const {productSchema} = require('./product')
+const { productSchema } = require('./product')
 
 const ClientSchema = new mongoose.Schema({
     name: {

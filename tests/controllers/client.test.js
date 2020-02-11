@@ -14,7 +14,7 @@ before(async () => {
     clientTest = await clientTest.save()
 })
 describe('Client Controller Test', () => {
-    describe('When create a client', () => {
+    describe('Create a client', () => {
         it('Returns status 201', done => {
             request(app)
                 .post('/api/client')
@@ -26,7 +26,7 @@ describe('Client Controller Test', () => {
                 .then(() => done())
                 .catch(done)
         })
-        it('Returns status 422 with E-mail already registered', done => {
+        it('Returns 422 with E-mail already registered', done => {
             request(app)
                 .post('/api/client')
                 .send({
@@ -38,16 +38,88 @@ describe('Client Controller Test', () => {
                 .catch(done)
         })
     })
-    it('Get exist client', done => {
-        request(app)
-            .get(`/api/client/${clientTest._id}`)
-            .expect(200)
-            .then(response => {
-                expect(response.body).to.deep.eq({ name: clientTest.name, email: clientTest.email });
-                expect(response.body).to.not.contain.property('_id');
+    describe('Get client', () => {
+        it('Return 200 and the client obj', done => {
+            request(app)
+                .get(`/api/client/${clientTest._id}`)
+                .expect(200)
+                .then(response => {
+                    expect(response.body).to.deep.eq({ name: clientTest.name, email: clientTest.email });
+                    expect(response.body).to.not.contain.property('_id');
 
-            })
+                })
+                .then(() => done())
+                .catch(done)
+        })
+        it('Return status 404 when client does not exist', done => {
+            request(app)
+                .get(`/api/client/43alfkjaksdfsd`)
+                .expect(404)
+                .then(() => done())
+                .catch(done)
+        })
+    })
+    describe('Update client', () => {
+        it('Return 200 and the client obj', done => {
+            request(app)
+                .put(`/api/client/${clientTest._id}`)
+                .send({
+                    name: 'Name Updated',
+                })
+                .expect(200)
+                .then(response => {
+                    expect(response.body).to.deep.eq({ name: 'Name Updated', email: clientTest.email });
+                })
+                .then(() => done())
+                .catch(done)
+        })
+        it('Return 200 if its the same email', done => {
+            request(app)
+                .put(`/api/client/${clientTest._id}`)
+                .send({
+                    name: 'Name Updated2',
+                    email: clientTest.email
+                })
+                .expect(200)
+                .then(response => {
+                    expect(response.body).to.deep.eq({ name: 'Name Updated2', email: clientTest.email });
+                })
+                .then(() => done())
+                .catch(done)
+        })
+        it('Return 422 with emails already registered', done => {
+            request(app)
+                .put(`/api/client/${clientTest._id}`)
+                .send({
+                    name: 'Name Updated2',
+                    email: 'test@test3.com'
+                })
+                .expect(422)
+                .then(() => done())
+                .catch(done)
+        })
+    })
+    describe('Delete Client', () => {
+        it('Return 200 when delete client', done => {
+            request(app)
+            .delete(`/api/client/${clientTest._id}`)
+            .expect(200)
             .then(() => done())
             .catch(done)
+        })
+        it('Return 404 when get a deleted client', done => {
+            request(app)
+            .get(`/api/client/${clientTest._id}`)
+            .expect(404)
+            .then(() => done())
+            .catch(done)
+        })
+        it('Return 404 when delete a deleted client', done => {
+            request(app)
+            .delete(`/api/client/${clientTest._id}`)
+            .expect(404)
+            .then(() => done())
+            .catch(done)
+        })
     })
 })
