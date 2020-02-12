@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../../app')
 const expect = require('chai').expect;
+const mongoose = require('mongoose');
 
 const { clientTest } = require("./mock");
 
@@ -51,30 +52,24 @@ describe('Client Controller Test', () => {
         })
     })
     describe('Update client', () => {
-        it('Return 200 and the client obj', done => {
+        it('Return 204 and the client obj', done => {
             request(app)
                 .put(`/api/client/${clientTest._id}`)
                 .send({
                     name: 'Name Updated',
                 })
-                .expect(200)
-                .then(response => {
-                    expect(response.body).to.deep.eq({ name: 'Name Updated', email: clientTest.email });
-                })
+                .expect(204)
                 .then(() => done())
                 .catch(done)
         })
-        it('Return 200 if its the same email', done => {
+        it('Return 400 if id is invalid', done => {
             request(app)
-                .put(`/api/client/${clientTest._id}`)
+                .put(`/api/client/asldkjflksadj`)
                 .send({
                     name: 'Name Updated2',
-                    email: clientTest.email
+                    email: 'newClient@email.com'
                 })
-                .expect(200)
-                .then(response => {
-                    expect(response.body).to.deep.eq({ name: 'Name Updated2', email: clientTest.email });
-                })
+                .expect(400)
                 .then(() => done())
                 .catch(done)
         })

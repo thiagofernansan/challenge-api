@@ -1,4 +1,5 @@
 const Client = require('../models/client')
+const mongoose = require('mongoose');
 
 module.exports.get = async (req, res) => {
     try {
@@ -14,15 +15,7 @@ module.exports.get = async (req, res) => {
 
 module.exports.create = async (req, res) => {
     try {
-        await validateByEmail(req)
-        let client = new Client({
-            name: req.body.name,
-            email: req.body.email
-        })
-
-        let savedClient = await client.save()
-        return res.status(201).json({ name: savedClient.name, email: savedClient.email });
-
+        return await createClient(req, res);
     } catch (error) {
         console.error(error)
         if (error.name === 'MongoError' && error.code === 11000) {
@@ -34,13 +27,16 @@ module.exports.create = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     try {
+        if(!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)){
+            return res.status(400).json({err: 'id is not valid or null.'});
+        }
         await validateUpdateByEmail(req);
         let client = await Client.findByIdAndUpdate(req.params.id, {
             ...(req.body.name && { name: req.body.name }),
             ...(req.body.email && { email: req.body.email })
-        })
-        let updatedClient = await Client.findById(client._id)
-        return res.json({ name: updatedClient.name, email: updatedClient.email })
+        }, {omitUndefined: true})
+        console.log(client)
+        return res.status(204).send()
     } catch (error) {
         console.error(error)
         if (error.name === 'MongoError' && error.code === 11000) {
@@ -60,6 +56,20 @@ module.exports.del = async (req, res) => {
         return res.status(500).json({ msg: error.message })
     }
 }
+async function createClient(req, res) {
+    await validateByEmail(req);
+    return await persistClientAndReturnStatus(req, res);
+}
+
+async function persistClientAndReturnStatus(req, res) {
+    let client = new Client({
+        name: req.body.name,
+        email: req.body.email
+    });
+    let savedClient = await client.save();
+    return res.status(201).json({ name: savedClient.name, email: savedClient.email });
+}
+
 async function validateByEmail(req) {
     let clientFound = await Client.findOne({ email: req.body.email });
     if (clientFound !== null) throw { name: 'MongoError', code: 11000 }

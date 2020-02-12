@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.set('useCreateIndex', true);
 
-const { productSchema } = require('./product')
-
 const ClientSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -12,9 +10,10 @@ const ClientSchema = new mongoose.Schema({
         type: String,
         unique: true,
     },
-    favoriteProduct: {
-        type: [productSchema]
-    }
+    favoriteProducts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'product'
+    }]
 }, { collection: 'client' });
 
 module.exports = mongoose.model('client', ClientSchema);
