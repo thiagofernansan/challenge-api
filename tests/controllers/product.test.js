@@ -28,33 +28,24 @@ describe('Product Controller Test', () => {
                 .then(() => done())
                 .catch(done)
         })
-        //     it('Return status 404 when product does not exist', done => {
-        //         request(app)
-        //             .get(`/api/product/43alfkjaksdfsd`)
-        //             .expect(404)
-        //             .then(() => done())
-        //             .catch(done)
-        //     })
-        // })
-        // describe('List products', () => {
-        //     it('Return 200 and the list of product', done => {
-        //         request(app)
-        //             .get(`/api/product`)
-        //             .expect(200)
-        //             .then(response => {
-        //                 expect(response.body).to.deep.eq({ name: productTest.name, email: productTest.email });
-        //                 expect(response.body).to.not.contain.property('_id');
-
-        //             })
-        //             .then(() => done())
-        //             .catch(done)
-        //     })
-        //     it('Return status 404 when product does not exist', done => {
-        //         request(app)
-        //             .get(`/api/product/43alfkjaksdfsd`)
-        //             .expect(404)
-        //             .then(() => done())
-        //             .catch(done)
-        //     })
+        it('Return status 404 when product does not exist', done => {
+            request(app)
+                .get(`/api/product/43alfkjaksdfsd`)
+                .expect(404)
+                .then(() => done())
+                .catch(done)
+        })
+    })
+    describe('List products', () => {
+        it('Return 200 and the list of product', done => {
+            request(app)
+                .get(`/api/product`)
+                .expect(200)
+                .then(response => {
+                    // expect(response.body).to.deep.eq(productTest);
+                })
+                .then(() => done())
+                .catch(done)
+        })
     })
 })
