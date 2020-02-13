@@ -1,8 +1,7 @@
 
 const mongoose = require('mongoose');
 const { readRecursiveDirectory } = require('./utils')
-
-const uri = "mongodb+srv://dbuser:ffD6Yopf5xVP2qZv@challenge-api-o4yie.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = process.env.MONGOURI;
 
 let connect = async () => {
     await mongoose.connect(uri, {

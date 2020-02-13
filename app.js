@@ -2,11 +2,13 @@ var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require('dotenv').config()
 
 var app = express();
 
 const {readRecursiveDirectory} = require('./helpers/utils')
 const {init} = require('./helpers/connectMongo')
+
 
 app.use(logger('[:date[clf]] | ":method :url HTTP/:http-version" | STATUS: :status | CONTENT_LENGTH: :res[content-length] | RESPONSE_TIME: :response-time ms'));
 app.use(express.json());
