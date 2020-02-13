@@ -1,4 +1,5 @@
 const Product = require('../models/product')
+const { parseProduct } = require('../helpers/utils')
 
 module.exports.list = async (req, res) => {
     try {
@@ -22,15 +23,4 @@ module.exports.get = async (req, res) => {
         console.error(error);
         return res.status(500).json({ msg: error.message })
     }
-}
-
-function parseProduct(p) {
-    return {
-        ...(p.price && { price: parseFloat(p.price.toString()) }),
-        brand: p.brand,
-        title: p.title,
-        image: p.image,
-        ...(p.reviewScore && { reviewScore: parseFloat(p.reviewScore.toString()) }),
-        _id: p._id
-    };
 }

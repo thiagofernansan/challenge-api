@@ -1,8 +1,14 @@
 const Client = require('../models/client')
+const Product = require('../models/product')
 const mongoose = require('mongoose');
+const { parseProduct } = require('../helpers/utils')
+const {createClient, validateUpdateByEmail} = require('../helpers/validator')
 
 module.exports.get = async (req, res) => {
     try {
+        if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({ message: 'Client not Found.' });
+        }
         let client = await Client.findById(req.params.id)
         if (client == null) return res.status(404).json({ message: 'Client not Found.' })
         return res.json({ name: client.name, email: client.email })
@@ -27,15 +33,14 @@ module.exports.create = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     try {
-        if(!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)){
-            return res.status(400).json({err: 'id is not valid or null.'});
+        if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ err: 'id is not valid.' });
         }
         await validateUpdateByEmail(req);
-        let client = await Client.findByIdAndUpdate(req.params.id, {
+        await Client.findByIdAndUpdate(req.params.id, {
             ...(req.body.name && { name: req.body.name }),
             ...(req.body.email && { email: req.body.email })
-        }, {omitUndefined: true})
-        console.log(client)
+        })
         return res.status(204).send()
     } catch (error) {
         console.error(error)
@@ -56,26 +61,33 @@ module.exports.del = async (req, res) => {
         return res.status(500).json({ msg: error.message })
     }
 }
-async function createClient(req, res) {
-    await validateByEmail(req);
-    return await persistClientAndReturnStatus(req, res);
+module.exports.favoriteProducts = async (req, res) => {
+    try {
+        let client = await Client.findById(req.params.id).populate({ path: 'favoriteProducts', select: '_id brand price title image reviewScore' })
+        if (client === null) return res.status(404).json({ message: 'Client not Found.' })
+        let retProducts = client.favoriteProducts.map(p => parseProduct(p))
+        return res.json(retProducts)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ msg: error.message })
+    }
 }
-
-async function persistClientAndReturnStatus(req, res) {
-    let client = new Client({
-        name: req.body.name,
-        email: req.body.email
-    });
-    let savedClient = await client.save();
-    return res.status(201).json({ name: savedClient.name, email: savedClient.email });
-}
-
-async function validateByEmail(req) {
-    let clientFound = await Client.findOne({ email: req.body.email });
-    if (clientFound !== null) throw { name: 'MongoError', code: 11000 }
-}
-async function validateUpdateByEmail(req) {
-    let clientFound = await Client.findOne({ email: req.body.email });
-    if (clientFound !== null && clientFound.id === req.params.id) return;
-    if (clientFound !== null) throw { name: 'MongoError', code: 11000 }
+module.exports.addFavoriteProduct = async (req, res) => {
+    try {
+        if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({ message: 'Client not Found.' });
+        }
+        let client = await Client.findById(req.params.id).populate('favoriteProducts');
+        if (client === null) return res.status(404).json({ message: 'Client not Found.' })
+        const favoriteListIndex = client.favoriteProducts.findIndex(f => f._id == req.body.productId);
+        if (favoriteListIndex == 0) return res.status(400).json({ message: 'Product is already registered in your favorite list.' })
+        let product = await Product.findById(req.body.productId);
+        if (product == null) return res.status(400).json({ message: 'Product is not exist.' })
+        client.favoriteProducts.push(product)
+        await client.save()
+        return res.status(201).json(parseProduct(product))
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ msg: error.message })
+    }
 }

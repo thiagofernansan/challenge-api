@@ -3,7 +3,7 @@ const app = require('../../app')
 const expect = require('chai').expect;
 const mongoose = require('mongoose');
 
-const { clientTest } = require("./mock");
+const { clientTest, singleProduct } = require("./mock");
 
 describe('Client Controller Test', () => {
     describe('Create a client', () => {
@@ -81,6 +81,62 @@ describe('Client Controller Test', () => {
                     email: 'test@test3.com'
                 })
                 .expect(422)
+                .then(() => done())
+                .catch(done)
+        })
+    })
+    describe('Get favorite products', () => {
+        it('Return 200', done => {
+            request(app)
+                .get(`/api/client/${clientTest._id}/favorite-products`)
+                .expect(200)
+                .then(() => done())
+                .catch(done)
+        })
+        it('Return favorite products list', done => {
+            request(app)
+                .get(`/api/client/${clientTest._id}/favorite-products`)
+                .expect(200)
+                .then(response => {
+                    expect(response.body.length).to.eq(clientTest.favoriteProducts.length);
+                })
+                .then(() => done())
+                .catch(done)
+        })
+    })
+    describe('Save favorite product', () => {
+        it('Return 400 if product exists into list', done => {
+            request(app)
+                .post(`/api/client/${clientTest._id}/favorite-products`)
+                .send({ productId: clientTest.favoriteProducts[0]._id })
+                .expect(400)
+                .then(() => done())
+                .catch(done)
+        })
+        it('Return 400 if product is not exist', done => {
+            request(app)
+                .post(`/api/client/${clientTest._id}/favorite-products`)
+                .send({ productId: mongoose.Types.ObjectId() })
+                .expect(400)
+                .then(() => done())
+                .catch(done)
+        })
+        it('Return favorite products list', done => {
+            request(app)
+                .get(`/api/client/${clientTest._id}/favorite-products`)
+                .expect(200)
+                .then(response => {
+                    expect(response.body.length).to.eq(clientTest.favoriteProducts.length);
+                })
+                .then(() => done())
+                .catch(done)
+        })
+        it('Return 201 when product is added into the list', done => {
+            request(app)
+                .post(`/api/client/${clientTest._id}/favorite-products`)
+                .send({ productId: singleProduct._id })
+                .expect(201)
+                .then(response => { console.log(response.body) })
                 .then(() => done())
                 .catch(done)
         })

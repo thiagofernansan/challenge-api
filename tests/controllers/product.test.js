@@ -42,7 +42,7 @@ describe('Product Controller Test', () => {
                 .get(`/api/product`)
                 .expect(200)
                 .then(response => {
-                    // expect(response.body).to.deep.eq(productTest);
+                    expect(response.body.length).to.eq(productTest.length);
                 })
                 .then(() => done())
                 .catch(done)

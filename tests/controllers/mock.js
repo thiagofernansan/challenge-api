@@ -22,11 +22,24 @@ let productList = [{
     reviewScore: 4.1
 }];
 let clientTest = new Client({ name: 'TestName', email: 'testname@testemail.com' })
+let singleProduct = new Product({
+    price: 999.99,
+    image: 'http://challenge-api.test.com/images/4',
+    brand: 'Consul',
+    title: 'Fogao 4 bocas',
+    reviewScore: 4.3
+})
 before(async () => {
     await init('models');
     await mongoose.connection.db.dropDatabase();
-    clientTest = await clientTest.save()
     productTest = await Product.insertMany(productList);
+    let x = productTest.map(p => {
+        return { id: p._id }
+    })
+    clientTest.favoriteProducts = productTest;
+    clientTest = await clientTest.save()
+    singleProduct = await singleProduct.save();
 });
 
 exports.clientTest = clientTest;
+exports.singleProduct = singleProduct;

@@ -19,4 +19,16 @@ const readRecursiveDirectory = (dir, filelist = ['']) => {
     return filelist;
 };
 
+let parseProduct = p => {
+    return {
+        ...(p.price && { price: parseFloat(p.price.toString()) }),
+        brand: p.brand,
+        title: p.title,
+        image: p.image,
+        ...(p.reviewScore && { reviewScore: parseFloat(p.reviewScore.toString()) }),
+        _id: p._id
+    };
+}
+
+module.exports.parseProduct = parseProduct
 module.exports.readRecursiveDirectory = readRecursiveDirectory;
