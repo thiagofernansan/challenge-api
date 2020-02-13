@@ -23,7 +23,7 @@ API desenvolvida para gerenciamentos de clientes e suas listas de produtos favor
 
 ## Configurar e executar o projeto
 
-String de configuração do mongodb no arquivo `.env` na raiz do servidor. Rodar os comandos abaixo para baixar as dependências e rodar o servidor.
+Adicionar a string de configuração do mongodb no arquivo `.env` na raiz do servidor. Rodar os comandos abaixo para baixar as dependências e rodar o servidor.
 ``bash 
 npm install
 npm start
