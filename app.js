@@ -2,18 +2,22 @@ var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-require('dotenv').config()
+
+require('./helpers/loadEnv').load()
 
 var app = express();
 
 const {readRecursiveDirectory} = require('./helpers/utils')
 const {init} = require('./helpers/connectMongo')
 
+let jwt = require('express-jwt');
+app.use(jwt({secret: process.env.AUTHSECRET}). unless({path: ['/auth']}))
 
 app.use(logger('[:date[clf]] | ":method :url HTTP/:http-version" | STATUS: :status | CONTENT_LENGTH: :res[content-length] | RESPONSE_TIME: :response-time ms'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 
 connectDB();
 
