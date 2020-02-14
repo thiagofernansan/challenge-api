@@ -1,37 +1,35 @@
 # Challenge API
 
-API desenvolvida para gerenciamentos de clientes e suas listas de produtos favoritos.
+API desenvolvida para gerenciamento de clientes e suas listas de produtos favoritos. 
 
-## Tecnologias
-
+## Principais Tecnologias
 - node: 12.15.0
 - mongodb: 4.2.3
+- express: 4.16.1
+- mocha: 7.0.1
+- supertest: 4.0.2
+- Docker
 
-## Dependências do projeto
-- cookie-parser": "~1.4.4",
-- debug": "~2.6.9",
-- dotenv": "^8.2.0",
-- express": "~4.16.1",
-- http-errors": "~1.6.3",
-- mongoose": "^5.8.11",
-- morgan": "~1.9.1"
-- chai": "^4.2.0",
-- mocha": "^7.0.1",
-- mock-mongoose": "^7.4.0-r2",
-- supertest": "^4.0.2"
+## Executar o projeto
 
+### Variáveis de ambiente
 
-## Configurar e executar o projeto
+Onde estarão informações de conexão com o banco de dados e porta da aplicação. Os arquivos estão na pasta `./dotenv` separadas por seus respectivos ambiente. O módulo `./helpers/loadEnv` fará o carregamento utilizando a lib **dotenv** com base na variavel `NODE_ENV` passada na inicialização da aplicação.
 
-Adicionar a string de configuração do mongodb no arquivo `.env` na raiz do servidor. Rodar os comandos abaixo para baixar as dependências e rodar o servidor.
-``bash 
-npm install
+### Via Docker Compose
+
+Rodando o comando `docker-compose up --build` iniciará a imagem node e do banco Mongo. A variavel `NODE_ENV` está com o valor **develop** no arquivo `Dockerfile` para a aplicação apontar para o banco mongo do container.
+
+## Executando local
+
+Rodar os comandos abaixo para baixar as dependências e rodar o servidor.
+``
+npm install && 
 npm start
 ``
 ## Testes e2e
 
+Os testes farão a criação de um data base onde os dados serão persistidos e depois removidos ao final dos testes. Executar o comando abaixo:
+``
 npm test
-
-
-
-
+``

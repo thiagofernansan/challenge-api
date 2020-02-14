@@ -2,7 +2,8 @@ var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-require('dotenv').config()
+
+require('./helpers/loadEnv').load()
 
 var app = express();
 

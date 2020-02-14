@@ -1,0 +1,21 @@
+version: '3'
+services:
+  challenge-api:
+    restart: always
+    container_name: challenge-api
+    environment:
+        NODE_ENV: "develop"
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
