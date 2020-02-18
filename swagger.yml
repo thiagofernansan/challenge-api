@@ -1,0 +1,300 @@
+openapi: 3.0.0
+info:
+  title: Challenge API
+  version: 1.0.0
+  description: "API Responsável para gerenciar clientes e suas listas de produtos favoritos"
+servers:
+  - url: http://127.0.0.1:3000
+    description: Ambiente local
+paths:
+  /api/client:
+    post:
+      security: 
+      - bearerAuth: []
+      summary: Cria um novo cliente
+      tags:
+        - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/client'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/client'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422': 
+          $ref: '#/components/responses/EmailAlreadyExists'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+  /api/client/{client_id}:
+    put:
+      security: 
+      - bearerAuth: []
+      summary: Atualiza os dados do cliente
+      parameters:
+        - in: path
+          name: client_id
+          schema:
+            type: number
+          required: true
+      tags:
+        - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/product'
+      responses:
+        '204':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '422':
+          $ref: '#/components/responses/EmailAlreadyExists'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      security: 
+      - bearerAuth: []
+      summary: Retorna os dados do cliente informado
+      parameters: 
+        - in: path
+          name: client_id
+          schema:
+            type: number
+          required: true
+      tags: 
+        - Client
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/client'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404': 
+          $ref: '#/components/responses/NotFoundError'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      security: 
+      - bearerAuth: []
+      summary: Remove o cliente informadod
+      parameters: 
+        - in: path
+          name: client_id
+          schema:
+            type: number
+          required: true
+      tags: 
+        - Client
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+  /api/client/{client_id}/favorite-products:
+    get:
+      security: 
+      - bearerAuth: []
+      summary: Retorna a lista de produtos favoritos de um cliente
+      parameters: 
+        - in: path
+          name: client_id
+          schema:
+            type: number
+          required: true
+      tags: 
+        - Client
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/favoriteProducts'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      security: 
+      - bearerAuth: []
+      summary: Adiciona Produto na lista de favoritos
+      parameters: 
+        - in: path
+          name: client_id
+          schema:
+            type: number
+          required: true
+      tags: 
+        - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/favoriteProducts'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+  /api/product:
+    get:
+      security: 
+      - bearerAuth: []
+      summary: Retorna a lista de produtos
+      tags: 
+        - Product
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/favoriteProducts'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+  /api/product/{product_id}:
+    get:
+      security: 
+      - bearerAuth: []
+      summary: Retorna dados do produto informado
+      parameters: 
+        - in: path
+          name: product_id
+          schema:
+            type: number
+          required: true
+      tags: 
+        - Product
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/favoriteProducts'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+  /auth:
+    post:
+      summary: Rota para a autenticação
+      tags: 
+        - Auth
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/token'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500': 
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    client:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      required:
+        - name
+        - email
+    product:
+      type: object
+      properties:
+        price:
+          type: number
+        image:
+          type: string
+        brand:
+          type: string
+        title:
+          type: string
+        reviewScore:
+          type: number
+    productWithId:
+      type: object
+      properties:
+        _id:
+          type: string
+        price:
+          type: number
+        image:
+          type: string
+        brand:
+          type: string
+        title:
+          type: string
+        reviewScore:
+          type: number
+    favoriteProducts:
+      type: array
+      items:
+        $ref: '#/components/schemas/productWithId'
+    token:
+      type: object
+      properties:
+        token:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token não informado ou inválido
+    InternalServerError:
+      description: Erro interno
+    NotFoundError:
+      description: Recurso não encontrado
+    EmailAlreadyExists:
+      description: E-mail já registrado
+security:
+  - bearerAuth: []
+tags: []

@@ -12,13 +12,14 @@ API desenvolvida para gerenciamento de clientes e suas listas de produtos favori
 
 ## Executar o projeto
 
+### Via Docker Compose
+
+Rodando o comando `docker-compose up --build` iniciará a imagem node e do banco Mongo. A variavel `NODE_ENV` está com o valor **develop** no arquivo `Dockerfile` para a aplicação apontar para o banco mongo do container.
+
 ### Variáveis de ambiente
 
 Onde estarão informações de conexão com o banco de dados e porta da aplicação. Os arquivos estão na pasta `./dotenv` separadas por seus respectivos ambiente. O módulo `./helpers/loadEnv` fará o carregamento utilizando a lib **dotenv** com base na variavel `NODE_ENV` passada na inicialização da aplicação.
 
-### Via Docker Compose
-
-Rodando o comando `docker-compose up --build` iniciará a imagem node e do banco Mongo. A variavel `NODE_ENV` está com o valor **develop** no arquivo `Dockerfile` para a aplicação apontar para o banco mongo do container.
 
 ## Executando local
 
